@@ -12,6 +12,7 @@ var Autocomplete = React.createClass({
 
   propTypes: {
     value: React.PropTypes.any,
+    onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
     onSelect: React.PropTypes.func,
     shouldItemRender: React.PropTypes.func,
@@ -32,6 +33,7 @@ var Autocomplete = React.createClass({
         display: 'inline-block'
       },
       inputProps: {},
+      onBlur: function onBlur() {},
       onChange: function onChange() {},
       onSelect: function onSelect(value, item) {},
       renderMenu: function renderMenu(items, value, style) {
@@ -300,12 +302,13 @@ var Autocomplete = React.createClass({
     return React.cloneElement(menu, { ref: 'menu' });
   },
 
-  handleInputBlur: function handleInputBlur() {
+  handleInputBlur: function handleInputBlur(event) {
     if (this._ignoreBlur) return;
     this.setState({
       isOpen: false,
       highlightedIndex: null
     });
+    this.props.onBlur(event, event.target.value);
   },
 
   handleInputFocus: function handleInputFocus() {
@@ -342,7 +345,9 @@ var Autocomplete = React.createClass({
         autoComplete: 'off',
         ref: 'input',
         onFocus: this.handleInputFocus,
-        onBlur: this.handleInputBlur,
+        onBlur: function (event) {
+          return _this7.handleInputBlur(event);
+        },
         onChange: function (event) {
           return _this7.handleChange(event);
         },
